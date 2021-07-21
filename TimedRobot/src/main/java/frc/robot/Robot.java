@@ -41,9 +41,6 @@ public class Robot extends TimedRobot {
     
     public static double elp;
     public static double erp;
-    public static double targetDistance;
-    public static double distance;
-
     /*JoystickButton button1;*/
 
     /*private double leftMotorStartPosition;
@@ -64,13 +61,6 @@ public class Robot extends TimedRobot {
     encoder_right = rightMotor1.getEncoder();
     
     /*button1 = new JoystickButton(driveStick, 1);*/
-    
-     elp = encoder_left.getPosition();
-     erp = encoder_right.getPosition();
-     distance = 8.5;
-     targetDistance = distance*4.7;
-
-
   }
 
   /**
@@ -96,54 +86,43 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    encoder_left.setPosition(0);
+    encoder_right.setPosition(0);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
 
-    elp = 0;
-    erp = 0;
-
-    //if(encoder_left.getPosition() >= 90 and encoder_right.getPosition() >= 90 ){
-      //left_m = (0,0);
-      //right_m = (0,0);
     SmartDashboard.putNumber("Encoder Position", encoder_left.getPosition());
     SmartDashboard.putNumber("Encoder Position", encoder_right.getPosition());
-
     System.out.println(encoder_left.getPosition() + "\t" + encoder_right.getPosition());
 
-    if (-encoder_left.getPosition() <  targetDistance && -encoder_right.getPosition() < targetDistance){
-      forwardDrive(8.5);
+
+    
+    if (-encoder_left.getPosition() < 22.95 && encoder_right.getPosition() < 22.95){
+      forwardDrive();
     }
-    /*else if (-encoder_left.getPosition() >= 35.25 && encoder_right.getPosition() >= 35.25){
+    else if (-encoder_left.getPosition() >= 22.0 && encoder_right.getPosition() >= 22.0){
       turnDrive();
+    
     }
-    else if(-encoder_left.getPosition() >= 64.55 && encoder_right.getPosition() >= 44.05){
+    else if(-encoder_left.getPosition() >= 52.25 && encoder_right.getPosition() >= 31.75){
       stopDrive();
-    }*/
+    }
     else{
       stopDrive();
     }
-
-    }
-
-  
+  }
   
   //autonomous methods
   //forward drive
-  public void forwardDrive(double distance) {
-    //targetDistance = distance*4.7;
+  public void forwardDrive() {
 
-    if (encoder_left.getPosition() < targetDistance  && encoder_right.getPosition() < targetDistance){
       leftMotor1.set(-0.1);
       leftMotor2.set(-0.1);
       rightMotor1.set(0.14);
       rightMotor2.set(0.14);
-  }
-  //else{
-   // stopDrive();
- // }
 
   }
   //right turn
@@ -162,17 +141,15 @@ public class Robot extends TimedRobot {
     rightMotor2.set(0.0);
   }
 
-
-  public void rightTurn(){
-
-  }
-
   /** This function is called once when teleop is enabled. */
   @Override
   
   public void teleopInit() {
+    encoder_left.setPosition(0);
+    encoder_right.setPosition(0);
     
   }
+
 
   /** This function is called periodically during operator control. */
   @Override
@@ -182,40 +159,31 @@ public class Robot extends TimedRobot {
 
     
     //left and right encoder positions printed in dashboard
-    /*SmartDashboard.putNumber("Encoder Position", encoder_left.getPosition());
-    SmartDashboard.putNumber("Encoder Position", encoder_right.getPosition());
 
-    System.out.println(encoder_left.getPosition() + "\t" + encoder_right.getPosition());
-    */
     
-
-
 
     //button 2 to turn right
     if(driveStick.getRawButton(2)){
+
       turnDrive();
+      
+
     }
     //trigger to move forward
     else if  (driveStick.getRawButton(1)){
-      forwardDrive(5);
-      SmartDashboard.putNumber("Encoder Position", encoder_left.getPosition());
-    SmartDashboard.putNumber("Encoder Position", encoder_right.getPosition());
-
-    System.out.println(encoder_left.getPosition() + "\t" + encoder_right.getPosition());
-   /*
-      teleop_drive.arcadeDrive(-0.3, 0);
-      SmartDashboard.putNumber("Encoder Position", encoder_m.getPosition());
-      System.out.println("left" + encoder_m.getPosition());
-      System.out.prinlnt(leftEnc + "\t" + rightEnc )
-    */
+      forwardDrive();
 
     }
     else{
 
     teleop_drive.arcadeDrive(driveStick.getY(), -driveStick.getX());
     }
-    
+    /*
+    SmartDashboard.putNumber("Encoder Position", encoder_left.getPosition());
+    SmartDashboard.putNumber("Encoder Position", encoder_right.getPosition());
 
+    System.out.println(encoder_left.getPosition() + "\t" + encoder_right.getPosition());
+    */
   }
 
   /** This function is called once when the robot is disabled. */
