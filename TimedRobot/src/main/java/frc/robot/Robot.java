@@ -46,6 +46,10 @@ public class Robot extends TimedRobot {
     /*private double leftMotorStartPosition;
     private double rightMotorStartPosition;*/
     
+    public static int state;
+    public static int middle_state;
+    public static int end_state;
+
   @Override
   
   public void robotInit() {
@@ -61,6 +65,9 @@ public class Robot extends TimedRobot {
     encoder_right = rightMotor1.getEncoder();
     
     /*button1 = new JoystickButton(driveStick, 1);*/
+    state = 0;
+    middle_state = 1;
+    end_state = 2;
   }
 
   /**
@@ -96,33 +103,64 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Encoder Position", encoder_left.getPosition());
     SmartDashboard.putNumber("Encoder Position", encoder_right.getPosition());
+
     System.out.println(encoder_left.getPosition() + "\t" + encoder_right.getPosition());
 
+    startPath();
 
-    
+  }
+  public void startPath(){  
+
+
     if (-encoder_left.getPosition() < 22.95 && encoder_right.getPosition() < 22.95){
       forwardDrive();
     }
-    else if (-encoder_left.getPosition() >= 22.0 && encoder_right.getPosition() >= 22.0){
+    else if (-encoder_left.getPosition() >= 22.95 || encoder_right.getPosition() >= 22.95){
       turnDrive();
-    
     }
-    else if(-encoder_left.getPosition() >= 52.25 && encoder_right.getPosition() >= 31.75){
+    if(-encoder_left.getPosition() >=  55.0 || encoder_right.getPosition() >= 35.0){
       stopDrive();
+      //state = middle_state;
+      middlePath();
+    } 
+
+    
+    
+ }
+ 
+  public void middlePath(){
+
+    if (-encoder_left.getPosition() < 115.0 && encoder_right.getPosition() < 100.0){
+      forwardDrive();
     }
-    else{
+    else if (-encoder_left.getPosition() >= 115.0 || encoder_right.getPosition() >= 100.0){
+      turnDrive();
+      
+    }
+    if(-encoder_left.getPosition() >=  144.0 || encoder_right.getPosition() >= 124.0){
+      stopDrive();
+
+      endPath();
+    }
+  }
+
+  public void endPath(){
+    if (-encoder_left.getPosition() < 148.7 && encoder_right.getPosition() < 128.7){
+      forwardDrive();
+    }
+    else if (-encoder_left.getPosition() >= 148.7 || encoder_right.getPosition() >= 128.7){
       stopDrive();
     }
   }
   
-  //autonomous methods
+  //autonomous methods 
   //forward drive
   public void forwardDrive() {
 
       leftMotor1.set(-0.1);
       leftMotor2.set(-0.1);
-      rightMotor1.set(0.14);
-      rightMotor2.set(0.14);
+      rightMotor1.set(0.128);
+      rightMotor2.set(0.128);
 
   }
   //right turn
@@ -145,8 +183,8 @@ public class Robot extends TimedRobot {
   @Override
   
   public void teleopInit() {
-    encoder_left.setPosition(0);
-    encoder_right.setPosition(0);
+    //encoder_left.setPosition(0);
+    //encoder_right.setPosition(0);
     
   }
 
@@ -160,7 +198,10 @@ public class Robot extends TimedRobot {
     
     //left and right encoder positions printed in dashboard
 
-    
+    SmartDashboard.putNumber("Encoder Position", encoder_left.getPosition());
+    SmartDashboard.putNumber("Encoder Position", encoder_right.getPosition());
+
+    System.out.println(encoder_left.getPosition() + "\t" + encoder_right.getPosition());
 
     //button 2 to turn right
     if(driveStick.getRawButton(2)){
